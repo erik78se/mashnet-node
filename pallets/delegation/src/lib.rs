@@ -191,8 +191,8 @@ pub mod pallet {
 	}
 
 	impl<T: Config> DidOperation<T> for DelegationRootCreationOperation<T> {
-		fn get_verification_key_type(&self) -> did::DidVerificationKeyType {
-			did::DidVerificationKeyType::CapabilityDelegation
+		fn get_verification_key_type(&self) -> did::DidVerificationKeyRelationship {
+			did::DidVerificationKeyRelationship::CapabilityDelegation
 		}
 
 		fn get_did(&self) -> &T::DidIdentifier {
@@ -248,8 +248,8 @@ pub mod pallet {
 	}
 
 	impl<T: Config> DidOperation<T> for DelegationCreationOperation<T> {
-		fn get_verification_key_type(&self) -> did::DidVerificationKeyType {
-			did::DidVerificationKeyType::CapabilityDelegation
+		fn get_verification_key_type(&self) -> did::DidVerificationKeyRelationship {
+			did::DidVerificationKeyRelationship::CapabilityDelegation
 		}
 
 		fn get_did(&self) -> &T::DidIdentifier {
@@ -301,8 +301,8 @@ pub mod pallet {
 	}
 
 	impl<T: Config> DidOperation<T> for DelegationRootRevocationOperation<T> {
-		fn get_verification_key_type(&self) -> did::DidVerificationKeyType {
-			did::DidVerificationKeyType::CapabilityDelegation
+		fn get_verification_key_type(&self) -> did::DidVerificationKeyRelationship {
+			did::DidVerificationKeyRelationship::CapabilityDelegation
 		}
 
 		fn get_did(&self) -> &T::DidIdentifier {
@@ -356,8 +356,8 @@ pub mod pallet {
 	}
 
 	impl<T: Config> DidOperation<T> for DelegationRevocationOperation<T> {
-		fn get_verification_key_type(&self) -> did::DidVerificationKeyType {
-			did::DidVerificationKeyType::CapabilityDelegation
+		fn get_verification_key_type(&self) -> did::DidVerificationKeyRelationship {
+			did::DidVerificationKeyRelationship::CapabilityDelegation
 		}
 
 		fn get_did(&self) -> &T::DidIdentifier {
@@ -571,7 +571,7 @@ pub mod pallet {
 				hash_root.as_ref(),
 				&operation.delegate_signature,
 				&delegate_did_details,
-				did::DidVerificationKeyType::Authentication,
+				did::DidVerificationKeyRelationship::Authentication,
 			)
 			.map_err(|err| match err {
 				// Should never happen as a DID has always a valid authentication key and UrlErrors are never thrown

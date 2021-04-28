@@ -165,7 +165,7 @@ pub fn get_sr25519_delegation_key(default: bool) -> sr25519::Pair {
 // a default key agreement key.
 pub fn generate_base_did_creation_operation(
 	did: TestDidIdentifier,
-	new_auth_key: did::PublicVerificationKey,
+	new_auth_key: did::DidPublicVerificationKey,
 ) -> did::DidCreationOperation<Test> {
 	DidCreationOperation {
 		did,
@@ -200,7 +200,7 @@ pub fn generate_base_did_delete_operation(did: TestDidIdentifier) -> did::DidDel
 
 // Given an authentication key, it generates a DidDetails object with the given
 // key and a default key agreement key.
-pub fn generate_base_did_details(auth_key: did::PublicVerificationKey) -> did::DidDetails<Test> {
+pub fn generate_base_did_details(auth_key: did::DidPublicVerificationKey) -> did::DidDetails<Test> {
 	did::DidDetails {
 		auth_key,
 		key_agreement_key: get_x25519_encryption_key(true),
@@ -212,9 +212,9 @@ pub fn generate_base_did_details(auth_key: did::PublicVerificationKey) -> did::D
 	}
 }
 
-pub fn generate_attestation_key_id(key: &did::PublicVerificationKey, tx_counter: u64) -> TestKeyId {
+pub fn generate_attestation_key_id(key: &did::DidPublicVerificationKey, tx_counter: u64) -> TestKeyId {
 	let mut vec = key.encode();
-	vec.extend_from_slice(did::DidVerificationKeyType::AssertionMethod.encode().as_ref());
+	vec.extend_from_slice(did::DidVerificationKeyRelationship::AssertionMethod.encode().as_ref());
 	vec.extend_from_slice(tx_counter.encode().as_slice());
 
 	TestHashing::hash(&vec)
@@ -225,12 +225,12 @@ pub fn generate_attestation_key_id(key: &did::PublicVerificationKey, tx_counter:
 #[derive(Clone, Decode, Debug, Encode, PartialEq)]
 pub struct TestDidOperation {
 	pub did: TestDidIdentifier,
-	pub verification_key_type: DidVerificationKeyType,
+	pub verification_key_type: DidVerificationKeyRelationship,
 	pub tx_counter: u64,
 }
 
 impl DidOperation<Test> for TestDidOperation {
-	fn get_verification_key_type(&self) -> DidVerificationKeyType {
+	fn get_verification_key_type(&self) -> DidVerificationKeyRelationship {
 		self.verification_key_type.clone()
 	}
 
