@@ -31,8 +31,7 @@ use crate::{self as did, mock::*, DidPublicKeyDetails};
 #[test]
 fn check_successful_simple_ed25519_creation() {
 	let auth_key = get_ed25519_authentication_key(true);
-	let operation =
-		generate_base_did_creation_operation(ALICE_DID, did::DidVerificationKey::from(auth_key.public()));
+	let operation = generate_base_did_creation_operation(ALICE_DID, did::DidVerificationKey::from(auth_key.public()));
 
 	let signature = auth_key.sign(operation.encode().as_ref());
 
@@ -62,8 +61,7 @@ fn check_successful_simple_ed25519_creation() {
 #[test]
 fn check_successful_simple_sr25519_creation() {
 	let auth_key = get_sr25519_authentication_key(true);
-	let operation =
-		generate_base_did_creation_operation(ALICE_DID, did::DidVerificationKey::from(auth_key.public()));
+	let operation = generate_base_did_creation_operation(ALICE_DID, did::DidVerificationKey::from(auth_key.public()));
 
 	let signature = auth_key.sign(operation.encode().as_ref());
 
@@ -145,8 +143,7 @@ fn check_successful_complete_creation() {
 fn check_duplicate_did_creation() {
 	let auth_key = get_sr25519_authentication_key(true);
 	let mock_did = generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
-	let operation =
-		generate_base_did_creation_operation(ALICE_DID, did::DidVerificationKey::from(auth_key.public()));
+	let operation = generate_base_did_creation_operation(ALICE_DID, did::DidVerificationKey::from(auth_key.public()));
 
 	let signature = auth_key.sign(operation.encode().as_ref());
 
@@ -170,8 +167,7 @@ fn check_invalid_signature_format_did_creation() {
 	// Using an Ed25519 key where an Sr25519 is expected
 	let invalid_key = get_ed25519_authentication_key(true);
 	// DID creation contains auth_key, but signature is generated using invalid_key
-	let operation =
-		generate_base_did_creation_operation(ALICE_DID, did::DidVerificationKey::from(auth_key.public()));
+	let operation = generate_base_did_creation_operation(ALICE_DID, did::DidVerificationKey::from(auth_key.public()));
 
 	let signature = invalid_key.sign(operation.encode().as_ref());
 
@@ -193,8 +189,7 @@ fn check_invalid_signature_format_did_creation() {
 fn check_invalid_signature_did_creation() {
 	let auth_key = get_sr25519_authentication_key(true);
 	let alternative_key = get_sr25519_authentication_key(false);
-	let operation =
-		generate_base_did_creation_operation(ALICE_DID, did::DidVerificationKey::from(auth_key.public()));
+	let operation = generate_base_did_creation_operation(ALICE_DID, did::DidVerificationKey::from(auth_key.public()));
 
 	let signature = alternative_key.sign(operation.encode().as_ref());
 
@@ -281,7 +276,9 @@ fn check_successful_complete_update() {
 	);
 	assert_eq!(
 		new_did_details.key_agreement_key,
-		operation.new_key_agreement_keys.expect("Missing new key agreement key.")
+		operation
+			.new_key_agreement_keys
+			.expect("Missing new key agreement key.")
 	);
 	assert_eq!(
 		new_did_details.attestation_key,
@@ -669,7 +666,7 @@ fn check_invalid_current_attestaton_key_deletion() {
 				operation.clone(),
 				did::DidSignature::from(signature)
 			),
-			did::Error::<Test>::CurrentlyActiveAttestationKey
+			did::Error::<Test>::CurrentlyActiveKey
 		);
 	});
 }

@@ -170,7 +170,7 @@ pub fn generate_base_did_creation_operation(
 	DidCreationOperation {
 		did,
 		new_auth_key,
-		new_key_agreement_key: get_x25519_encryption_key(true),
+		new_key_agreement_keys: BTreeSet::new(),
 		new_attestation_key: None,
 		new_delegation_key: None,
 		new_endpoint_url: None,
@@ -183,11 +183,11 @@ pub fn generate_base_did_update_operation(did: TestDidIdentifier) -> did::DidUpd
 	DidUpdateOperation {
 		did,
 		new_authentication_key: None,
-		new_key_agreement_keys: None,
+		new_key_agreement_keys: BTreeSet::new(),
 		attestation_key_update: DidVerificationKeyUpdateAction::default(),
 		delegation_key_update: DidVerificationKeyUpdateAction::default(),
 		new_endpoint_url: None,
-		public_keys_to_remove: None,
+		public_keys_to_remove: BTreeSet::new(),
 		tx_counter: 1,
 	}
 }
@@ -203,7 +203,7 @@ pub fn generate_base_did_delete_operation(did: TestDidIdentifier) -> did::DidDel
 pub fn generate_base_did_details(auth_key: did::DidVerificationKey) -> did::DidDetails<Test> {
 	did::DidDetails {
 		authentication_key: auth_key,
-		key_agreement_key: get_x25519_encryption_key(true),
+		key_agreement_keys: BTreeSet::new(),
 		attestation_key: None,
 		delegation_key: None,
 		endpoint_url: None,
@@ -213,10 +213,7 @@ pub fn generate_base_did_details(auth_key: did::DidVerificationKey) -> did::DidD
 }
 
 pub fn generate_attestation_key_id(key: &did::DidVerificationKey, tx_counter: u64) -> TestKeyId {
-	let mut vec = key.encode();
-	vec.extend_from_slice(did::DidVerificationKeyRelationship::AssertionMethod.encode().as_ref());
-	vec.extend_from_slice(tx_counter.encode().as_slice());
-
+	let vec = key.encode();
 	TestHashing::hash(&vec)
 }
 
