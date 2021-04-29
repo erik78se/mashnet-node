@@ -20,11 +20,11 @@ use std::convert::TryFrom;
 
 use frame_support::{assert_noop, assert_ok};
 use sp_core::*;
-use sp_std::collections::{btree_map::BTreeMap, btree_set::BTreeSet};
+use sp_std::collections::btree_set::BTreeSet;
 
 use codec::Encode;
 
-use crate::{self as did, mock::*, DidPublicKeyDetails};
+use crate::{self as did, mock::*};
 
 // submit_did_create_operation
 

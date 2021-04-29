@@ -87,8 +87,6 @@ pub type TestKeyId = did::KeyId<Test>;
 pub type TestVerificationKeyDetails = did::DidPublicKeyDetails<Test>;
 pub type TestBlockNumber = <Test as frame_system::Config>::BlockNumber;
 
-type TestHashing = <Test as frame_system::Config>::Hashing;
-
 #[cfg(test)]
 pub(crate) const DEFAULT_ACCOUNT: AccountId = AccountId::new([0u8; 32]);
 
