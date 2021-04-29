@@ -31,9 +31,8 @@ fn check_submit_delegation_root_creation_operation_successful() {
 	let auth_key = did_mock::get_ed25519_authentication_key(true);
 	let del_key = did_mock::get_sr25519_delegation_key(true);
 
-	let mut delegator_details =
-		did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
-	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()).into(), 0u64);
+	let mut delegator_details = did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()), 0u64);
 
 	let delegator_did = did_mock::ALICE_DID;
 	let (root_id, root_node) = (
@@ -78,9 +77,8 @@ fn check_did_not_found_submit_delegation_root_creation_operation() {
 	let auth_key = did_mock::get_ed25519_authentication_key(true);
 	let del_key = did_mock::get_sr25519_delegation_key(true);
 
-	let mut delegator_details =
-		did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
-	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()).into(), 0u64);
+	let mut delegator_details = did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()), 0u64);
 
 	let delegator_did = did_mock::ALICE_DID;
 	let alternative_did = did_mock::BOB_DID;
@@ -113,9 +111,8 @@ fn check_did_max_tx_counter_submit_delegation_root_creation_operation() {
 	let auth_key = did_mock::get_ed25519_authentication_key(true);
 	let del_key = did_mock::get_sr25519_delegation_key(true);
 
-	let mut delegator_details =
-		did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
-	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()).into(), 0u64);
+	let mut delegator_details = did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()), 0u64);
 	delegator_details.set_tx_counter(u64::MAX);
 
 	let delegator_did = did_mock::ALICE_DID;
@@ -157,9 +154,8 @@ fn check_did_too_small_tx_counter_submit_delegation_root_creation_operation() {
 	let auth_key = did_mock::get_ed25519_authentication_key(true);
 	let del_key = did_mock::get_sr25519_delegation_key(true);
 
-	let mut delegator_details =
-		did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
-	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()).into(), 0u64);
+	let mut delegator_details = did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()), 0u64);
 	delegator_details.set_tx_counter(1u64);
 
 	let delegator_did = did_mock::ALICE_DID;
@@ -202,9 +198,8 @@ fn check_did_equal_tx_counter_submit_delegation_root_creation_operation() {
 	let auth_key = did_mock::get_ed25519_authentication_key(true);
 	let del_key = did_mock::get_sr25519_delegation_key(true);
 
-	let mut delegator_details =
-		did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()).into(), 0u64);
+	let mut delegator_details = did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()), 0u64);
 
 	let delegator_did = did_mock::ALICE_DID;
 	let (root_id, root_node) = (
@@ -246,9 +241,8 @@ fn check_did_too_large_tx_counter_submit_delegation_root_creation_operation() {
 	let auth_key = did_mock::get_ed25519_authentication_key(true);
 	let del_key = did_mock::get_sr25519_delegation_key(true);
 
-	let mut delegator_details =
-		did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()).into(), 0u64);
+	let mut delegator_details = did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()), 0u64);
 
 	let delegator_did = did_mock::ALICE_DID;
 	let (root_id, root_node) = (
@@ -333,9 +327,8 @@ fn check_did_invalid_signature_format_submit_delegation_root_creation_operation(
 	let del_key = did_mock::get_sr25519_delegation_key(true);
 	let invalid_format_del_key = did_mock::get_ed25519_delegation_key(true);
 
-	let mut delegator_details =
-		did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()).into(), 0u64);
+	let mut delegator_details = did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()), 0u64);
 
 	let delegator_did = did_mock::ALICE_DID;
 	let (root_id, root_node) = (
@@ -377,9 +370,8 @@ fn check_did_invalid_signature_submit_delegation_root_creation_operation() {
 	let del_key = did_mock::get_sr25519_delegation_key(true);
 	let invalid_del_key = did_mock::get_sr25519_delegation_key(false);
 
-	let mut delegator_details =
-		did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()).into(), 0u64);
+	let mut delegator_details = did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()), 0u64);
 
 	let delegator_did = did_mock::ALICE_DID;
 	let (root_id, root_node) = (
@@ -420,9 +412,8 @@ fn check_duplicate_submit_delegation_root_creation_operation() {
 	let auth_key = did_mock::get_ed25519_authentication_key(true);
 	let del_key = did_mock::get_sr25519_delegation_key(true);
 
-	let mut delegator_details =
-		did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()).into(), 0u64);
+	let mut delegator_details = did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()), 0u64);
 
 	let delegator_did = did_mock::ALICE_DID;
 	let (root_id, root_node) = (
@@ -464,9 +455,8 @@ fn check_ctype_not_found_submit_delegation_root_creation_operation() {
 	let auth_key = did_mock::get_ed25519_authentication_key(true);
 	let del_key = did_mock::get_sr25519_delegation_key(true);
 
-	let mut delegator_details =
-		did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()).into(), 0u64);
+	let mut delegator_details = did_mock::generate_base_did_details(did::DidVerificationKey::from(auth_key.public()));
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(del_key.public()), 0u64);
 
 	let delegator_did = did_mock::ALICE_DID;
 	let (root_id, root_node) = (
@@ -512,7 +502,7 @@ fn check_submit_delegation_no_parent_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -594,7 +584,7 @@ fn check_submit_delegation_with_parent_creation_operation_successful() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -684,7 +674,7 @@ fn check_delegator_did_not_found_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -741,7 +731,7 @@ fn check_delegator_max_tx_counter_value_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 	delegator_details.set_tx_counter(u64::MAX);
 
 	let delegate_details =
@@ -810,7 +800,7 @@ fn check_delegator_too_small_tx_counter_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 	delegator_details.set_tx_counter(1u64);
 
 	let delegate_details =
@@ -880,7 +870,7 @@ fn check_delegator_equal_tx_counter_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -949,7 +939,7 @@ fn check_delegator_too_large_tx_counter_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -1087,7 +1077,7 @@ fn check_delegator_invalid_signature_format_submit_delegation_creation_operation
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -1156,7 +1146,7 @@ fn check_delegator_invalid_signature_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -1225,7 +1215,7 @@ fn check_delegate_did_not_found_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegator_did = did_mock::ALICE_DID;
 	let delegate_did = did_mock::BOB_DID;
@@ -1291,7 +1281,7 @@ fn check_invalid_delegate_signature_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -1360,7 +1350,7 @@ fn check_duplicate_delegation_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -1430,7 +1420,7 @@ fn check_root_not_existing_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -1500,7 +1490,7 @@ fn check_parent_not_existing_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -1570,7 +1560,7 @@ fn check_not_owner_of_parent_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -1648,7 +1638,7 @@ fn check_unauthorised_delegation_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -1724,7 +1714,7 @@ fn check_not_owner_of_root_delegation_submit_delegation_creation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -1796,7 +1786,7 @@ fn check_list_hierarchy_submit_delegation_root_revocation_operation_successful()
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -1878,7 +1868,7 @@ fn check_tree_hierarchy_submit_delegation_root_revocation_operation_successful()
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -1957,7 +1947,7 @@ fn check_greater_max_revocations_submit_delegation_root_revocation_operation_suc
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -2026,7 +2016,7 @@ fn check_delegator_did_not_present_submit_hierarchy_delegation_root_revocation_o
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -2082,7 +2072,7 @@ fn check_max_did_tx_counter_submit_delegation_root_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 	delegator_details.set_tx_counter(u64::MAX);
 
 	let delegate_details =
@@ -2146,7 +2136,7 @@ fn check_too_small_did_tx_counter_submit_delegation_root_revocation_operation() 
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 	delegator_details.set_tx_counter(1u64);
 
 	let delegate_details =
@@ -2211,7 +2201,7 @@ fn check_equal_did_tx_counter_submit_delegation_root_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -2275,7 +2265,7 @@ fn check_too_large_did_tx_counter_submit_delegation_root_revocation_operation() 
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -2403,7 +2393,7 @@ fn check_invalid_signature_format_submit_delegation_root_revocation_operation() 
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -2467,7 +2457,7 @@ fn check_invalid_signature_submit_delegation_root_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -2530,7 +2520,7 @@ fn check_root_not_found_submit_delegation_root_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -2594,7 +2584,7 @@ fn check_different_root_creator_submit_delegation_root_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -2660,7 +2650,7 @@ fn check_too_small_max_revocations_submit_delegation_root_revocation_operation()
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -2724,7 +2714,7 @@ fn check_exact_children_max_revocations_submit_delegation_root_revocation_operat
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -2822,7 +2812,7 @@ fn check_direct_owner_submit_delegation_revocation_operation_successful() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -2898,7 +2888,7 @@ fn check_parent_owner_submit_delegation_revocation_operation_successful() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -2974,7 +2964,7 @@ fn check_delegator_did_not_present_submit_delegation_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -3036,7 +3026,7 @@ fn check_did_max_tx_counter_submit_delegation_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 	delegator_details.set_tx_counter(u64::MAX);
 
 	let delegate_details =
@@ -3106,7 +3096,7 @@ fn check_delegator_too_small_tx_counter_submit_delegation_revocation_operation()
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 	delegator_details.set_tx_counter(1u64);
 
 	let delegate_details =
@@ -3177,7 +3167,7 @@ fn check_delegator_equal_tx_counter_submit_delegation_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -3247,7 +3237,7 @@ fn check_delegator_too_large_tx_counter_submit_delegation_revocation_operation()
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -3387,7 +3377,7 @@ fn check_invalid_signature_format_submit_delegation_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -3457,7 +3447,7 @@ fn check_invalid_signature_submit_delegation_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -3526,7 +3516,7 @@ fn check_delegation_not_found_submit_delegation_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -3597,7 +3587,7 @@ fn check_not_delegating_submit_delegation_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -3670,7 +3660,7 @@ fn check_parent_too_far_submit_delegation_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));
@@ -3741,7 +3731,7 @@ fn check_too_many_revocations_submit_delegation_revocation_operation() {
 
 	let mut delegator_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegator_auth_key.public()));
-		delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()).into(), 0u64);
+	delegator_details.update_delegation_key(did::DidVerificationKey::from(delegator_del_key.public()), 0u64);
 
 	let delegate_details =
 		did_mock::generate_base_did_details(did::DidVerificationKey::from(delegate_auth_key.public()));

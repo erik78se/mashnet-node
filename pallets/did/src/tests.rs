@@ -694,7 +694,7 @@ fn check_currently_active_authentication_key_update() {
 	let signature = auth_key.sign(operation.encode().as_ref());
 
 	let mut ext = ExtBuilder::default()
-		.with_dids(vec![(ALICE_DID, old_did_details.clone())])
+		.with_dids(vec![(ALICE_DID, old_did_details)])
 		.build();
 
 	let new_block_number: TestBlockNumber = 1;
@@ -731,7 +731,7 @@ fn check_currently_active_delegation_key_update() {
 	let signature = auth_key.sign(operation.encode().as_ref());
 
 	let mut ext = ExtBuilder::default()
-		.with_dids(vec![(ALICE_DID, old_did_details.clone())])
+		.with_dids(vec![(ALICE_DID, old_did_details)])
 		.build();
 
 	let new_block_number: TestBlockNumber = 1;
@@ -768,7 +768,7 @@ fn check_currently_active_attestation_key_update() {
 	let signature = auth_key.sign(operation.encode().as_ref());
 
 	let mut ext = ExtBuilder::default()
-		.with_dids(vec![(ALICE_DID, old_did_details.clone())])
+		.with_dids(vec![(ALICE_DID, old_did_details)])
 		.build();
 
 	let new_block_number: TestBlockNumber = 1;
@@ -806,7 +806,7 @@ fn check_verification_key_not_present_update() {
 	let signature = auth_key.sign(operation.encode().as_ref());
 
 	let mut ext = ExtBuilder::default()
-		.with_dids(vec![(ALICE_DID, old_did_details.clone())])
+		.with_dids(vec![(ALICE_DID, old_did_details)])
 		.build();
 
 	let new_block_number: TestBlockNumber = 1;
