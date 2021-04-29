@@ -169,7 +169,7 @@ pub fn generate_base_did_creation_operation(
 ) -> did::DidCreationOperation<Test> {
 	DidCreationOperation {
 		did,
-		new_auth_key,
+		new_authentication_key: new_auth_key,
 		new_key_agreement_keys: BTreeSet::new(),
 		new_attestation_key: None,
 		new_delegation_key: None,
@@ -188,33 +188,24 @@ pub fn generate_base_did_update_operation(did: TestDidIdentifier) -> did::DidUpd
 		delegation_key_update: DidVerificationKeyUpdateAction::default(),
 		new_endpoint_url: None,
 		public_keys_to_remove: BTreeSet::new(),
-		tx_counter: 1,
+		tx_counter: 1u64,
 	}
 }
 
 // Given a DID identifier, it returns a DidDeletionOperation
 // that would remove the DID from chain.
 pub fn generate_base_did_delete_operation(did: TestDidIdentifier) -> did::DidDeletionOperation<Test> {
-	DidDeletionOperation { did, tx_counter: 1 }
+	DidDeletionOperation { did, tx_counter: 1u64 }
 }
 
 // Given an authentication key, it generates a DidDetails object with the given
-// key and a default key agreement key.
-pub fn generate_base_did_details(auth_key: did::DidVerificationKey) -> did::DidDetails<Test> {
-	did::DidDetails {
-		authentication_key: auth_key,
-		key_agreement_keys: BTreeSet::new(),
-		attestation_key: None,
-		delegation_key: None,
-		endpoint_url: None,
-		last_tx_counter: 0,
-		public_keys: BTreeMap::new(),
-	}
+// key.
+pub fn generate_base_did_details(authentication_key: did::DidVerificationKey) -> did::DidDetails<Test> {
+	did::DidDetails::new(authentication_key, 0u64)
 }
 
-pub fn generate_attestation_key_id(key: &did::DidVerificationKey, tx_counter: u64) -> TestKeyId {
-	let vec = key.encode();
-	TestHashing::hash(&vec)
+pub fn generate_key_id(key: &did::DidPublicKey, tx_counter: u64) -> TestKeyId {
+	utils::calculate_key_id::<Test>(key)
 }
 
 // A test DID operation which can be crated to require any DID verification key

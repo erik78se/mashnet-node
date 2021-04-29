@@ -380,6 +380,7 @@ pub mod pallet {
 						block_number,
 					},
 				);
+				self.key_agreement_keys.insert(new_key_agreement_id);
 			}
 		}
 
@@ -547,7 +548,7 @@ pub mod pallet {
 			let current_block_number = <frame_system::Pallet<T>>::block_number();
 
 			// Creates a new DID with the given authentication key.
-			let mut new_did_details = DidDetails::new(op.new_auth_key, current_block_number);
+			let mut new_did_details = DidDetails::new(op.new_authentication_key, current_block_number);
 
 			new_did_details.add_key_agreement_keys(op.new_key_agreement_keys, current_block_number);
 
@@ -655,7 +656,7 @@ pub mod pallet {
 		/// The DID identifier. It has to be unique.
 		pub did: T::DidIdentifier,
 		/// The new authentication key.
-		pub new_auth_key: DidVerificationKey,
+		pub new_authentication_key: DidVerificationKey,
 		/// The new key agreement keys.
 		pub new_key_agreement_keys: BTreeSet<DidEncryptionKey>,
 		/// [OPTIONAL] The new attestation key.
