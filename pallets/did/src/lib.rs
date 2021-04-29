@@ -70,13 +70,13 @@ pub mod pallet {
 	/// Reference to a payload of data of variable size.
 	pub type Payload = [u8];
 
-	/// Type of a DID key identifier.
+	/// Type for a DID key identifier.
 	pub type KeyId<T> = <T as frame_system::Config>::Hash;
 
 	/// Type for a block number.
 	pub type BlockNumber<T> = <T as frame_system::Config>::BlockNumber;
 
-	/// The string description of the a DID public key.
+	/// The string description of a DID public key.
 	///
 	/// The description must follow the [DID specification](https://w3c.github.io/did-spec-registries/#verification-method-types).
 	pub trait DidPublicKeyDescription {
@@ -212,11 +212,11 @@ pub mod pallet {
 	/// All the errors that can be generated when validating a DID operation.
 	#[derive(Debug, Eq, PartialEq)]
 	pub enum DidError {
-		/// See StorageError.
+		/// See [StorageError].
 		StorageError(StorageError),
-		/// See SignatureError.
+		/// See [SignatureError].
 		SignatureError(SignatureError),
-		/// See UrlError.
+		/// See [UrlError].
 		UrlError(UrlError),
 		/// An error that is not supposed to take place, yet it happened.
 		InternalError,
@@ -286,10 +286,10 @@ pub mod pallet {
 		/// The set of the key agreement key IDs, which can be used to encrypt
 		/// data addressed to the DID subject.
 		key_agreement_keys: BTreeSet<KeyId<T>>,
-		/// [OPTIONAL] The ID of the delegation key, used to verify the
+		/// \[OPTIONAL\] The ID of the delegation key, used to verify the
 		/// signatures of the delegations created by the DID subject.
 		delegation_key: Option<KeyId<T>>,
-		/// [OPTIONAL] The ID of the attestation key, used to verify the
+		/// \[OPTIONAL\] The ID of the attestation key, used to verify the
 		/// signatures of the attestations created by the DID subject.
 		attestation_key: Option<KeyId<T>>,
 		/// The map of public keys, with the key label as
@@ -302,8 +302,8 @@ pub mod pallet {
 		/// be used to create new attestations but can still be used to verify
 		/// previously issued attestations.
 		public_keys: BTreeMap<KeyId<T>, DidPublicKeyDetails<T>>,
-		/// [OPTIONAL] The URL pointing to the service endpoints the DID subject
-		/// publicly exposes.
+		/// \[OPTIONAL\] The URL pointing to the service endpoints the DID
+		/// subject publicly exposes.
 		pub endpoint_url: Option<Url>,
 		/// The counter used to avoid replay attacks, which is checked and
 		/// updated upon each DID operation involving with the subject as the
@@ -350,10 +350,10 @@ pub mod pallet {
 			let old_authentication_key_id = self.authentication_key;
 			let new_authentication_key_id = utils::calculate_key_id::<T>(&new_authentication_key.into());
 			self.authentication_key = new_authentication_key_id;
-			// Remove old key ID from public keys, if not used anymore
+			// Remove old key ID from public keys, if not used anymore.
 			self.remove_key_if_unused(&old_authentication_key_id);
 			// Add new key ID to public keys. If a key with the same ID is already present,
-			// the result is that the block number is updated.
+			// the result is simply that the block number is updated.
 			self.public_keys.insert(
 				new_authentication_key_id,
 				DidPublicKeyDetails {
@@ -407,7 +407,7 @@ pub mod pallet {
 
 		/// Delete the DID attestation key.
 		///
-		/// It cannot be used to write new attestations anymore.
+		/// Once deleted, it cannot be used to write new attestations anymore.
 		/// The key is also removed from the set of verification keys if it not
 		/// used anywhere else in the DID.
 		pub fn delete_attestation_key(&mut self) {
@@ -451,17 +451,17 @@ pub mod pallet {
 		}
 
 		/// Deletes a public key from the set of public keys stored on chain.
-		/// Additionally, if the public key to remove matches one of the active
-		/// public keys (except for the authentication and attestation keys), it
-		/// also clears the relative field.
+		/// Additionally, if the public key to remove is among the key agreement
+		/// keys, it also eliminates it from there.
 		///
 		/// When deleting a public key, the following conditions are verified:
 		/// - 1. the set of keys to delete does not contain any of the currently
 		///   active verification keys, i.e., authentication, attestation, and
-		///   delegation key.
+		///   delegation key, i.e., only key agreement keys and past attestation
+		///   keys can be deleted.
 		/// - 2. the set of keys to delete contains key IDs that are not
 		///   currently stored on chain
-		pub fn remove_public_keys(&mut self, key_ids: &BTreeSet<KeyId<T>>) -> Result<(), StorageError> {
+		fn remove_public_keys(&mut self, key_ids: &BTreeSet<KeyId<T>>) -> Result<(), StorageError> {
 			// Consider the currently active authentication, attestation, and delegation key
 			// as forbidden to delete. They can be deleted with the right operation for the
 			// respective fields in the DidUpdateOperation.
@@ -589,13 +589,13 @@ pub mod pallet {
 	}
 
 	// Generates a new DID entry starting from the current one stored in the
-	// storage and by applying the changes in the DidUpdateOperation.
+	// storage and by applying the changes in the [DidUpdateOperation].
 	//
-	// The operation fails with a DidError if the update operation instructs to
+	// The operation fails with a [DidError] if the update operation instructs to
 	// delete a verification key that is not associated with the DID.
 	//
 	// Please note that this method does not perform any checks regarding
-	// the validity of the DidUpdateOperation signature nor whether the nonce
+	// the validity of the [DidUpdateOperation] signature nor whether the nonce
 	// provided is valid.
 	impl<T: Config> TryFrom<(DidDetails<T>, DidUpdateOperation<T>)> for DidDetails<T> {
 		type Error = DidError;
@@ -669,7 +669,7 @@ pub mod pallet {
 
 	/// An operation to create a new DID.
 	///
-	/// The struct implements the DidOperation trait, and as such it must
+	/// The struct implements the [DidOperation] trait, and as such it must
 	/// contain information about the caller's DID, the type of DID key
 	/// required to verify the operation signature, and the tx counter to
 	/// protect against replay attacks.
@@ -681,11 +681,11 @@ pub mod pallet {
 		pub new_authentication_key: DidVerificationKey,
 		/// The new key agreement keys.
 		pub new_key_agreement_keys: BTreeSet<DidEncryptionKey>,
-		/// [OPTIONAL] The new attestation key.
+		/// \[OPTIONAL\] The new attestation key.
 		pub new_attestation_key: Option<DidVerificationKey>,
-		/// [OPTIONAL] The new delegation key.
+		/// \[OPTIONAL\] The new delegation key.
 		pub new_delegation_key: Option<DidVerificationKey>,
-		/// [OPTIONAL] The URL containing the DID endpoints description.
+		/// \[OPTIONAL\] The URL containing the DID endpoints description.
 		pub new_endpoint_url: Option<Url>,
 	}
 
@@ -706,7 +706,7 @@ pub mod pallet {
 
 	/// An operation to update a DID.
 	///
-	/// The struct implements the DidOperation trait, and as such it must
+	/// The struct implements the [DidOperation] trait, and as such it must
 	/// contain information about the caller's DID, the type of DID key
 	/// required to verify the operation signature, and the tx counter to
 	/// protect against replay attacks.
@@ -714,20 +714,20 @@ pub mod pallet {
 	pub struct DidUpdateOperation<T: Config> {
 		/// The DID identifier.
 		pub did: T::DidIdentifier,
-		/// [OPTIONAL] The new authentication key.
+		/// \[OPTIONAL\] The new authentication key.
 		pub new_authentication_key: Option<DidVerificationKey>,
 		/// A new set of key agreement keys to add to the ones already stored.
 		pub new_key_agreement_keys: BTreeSet<DidEncryptionKey>,
-		/// [OPTIONAL] The attestation key update action.
+		/// \[OPTIONAL\] The attestation key update action.
 		pub attestation_key_update: DidVerificationKeyUpdateAction,
-		/// [OPTIONAL] The delegation key update action.
+		/// \[OPTIONAL\] The delegation key update action.
 		pub delegation_key_update: DidVerificationKeyUpdateAction,
 		/// The set of old attestation keys to remove, given their identifiers.
 		/// If the operation also replaces the current attestation key, it will
 		/// not be considered for removal in this operation, so it is not
 		/// possible to specify it for removal in this set.
 		pub public_keys_to_remove: BTreeSet<KeyId<T>>,
-		/// [OPTIONAL] The new endpoint URL.
+		/// \[OPTIONAL\] The new endpoint URL.
 		pub new_endpoint_url: Option<Url>,
 		/// The DID tx counter.
 		pub tx_counter: u64,
@@ -747,7 +747,8 @@ pub mod pallet {
 		}
 	}
 
-	/// Possible actions on a DID verification key within a DidUpdateOperation.
+	/// Possible actions on a DID verification key within a
+	/// [DidUpdateOperation].
 	#[derive(Clone, Copy, Decode, Debug, Encode, Eq, Ord, PartialEq, PartialOrd)]
 	pub enum DidVerificationKeyUpdateAction {
 		/// Do not change the verification key.
@@ -767,7 +768,7 @@ pub mod pallet {
 
 	/// An operation to delete a DID.
 	///
-	/// The struct implements the DidOperation trait, and as such it must
+	/// The struct implements the [DidOperation] trait, and as such it must
 	/// contain information about the caller's DID, the type of DID key
 	/// required to verify the operation signature, and the tx counter to
 	/// protect against replay attacks.
@@ -886,8 +887,11 @@ pub mod pallet {
 	/// Supported URLs.
 	#[derive(Clone, Decode, Debug, Encode, PartialEq)]
 	pub enum Url {
+		/// See [HttpUrl].
 		Http(HttpUrl),
+		/// See [FtpUrl].
 		Ftp(FtpUrl),
+		/// See [IpfsUrl].
 		Ipfs(IpfsUrl),
 	}
 
@@ -1027,10 +1031,11 @@ pub mod pallet {
 		///
 		/// * origin: the Substrate account submitting the transaction (which
 		///   can be different from the DID subject)
-		/// * operation: the DidCreationOperation which contains the details of
-		///   the new DID
-		/// * signature: the signature over DidCreationOperation that must be
-		///   signed with the authentication key provided in the operation
+		/// * operation: the [DidCreationOperation] which contains the details
+		///   of the new DID
+		/// * signature: the [signature](DidSignature) over the operation that
+		///   must be signed with the authentication key provided in the
+		///   operation
 		#[pallet::weight(T::WeightInfo::submit_did_create_operation())]
 		pub fn submit_did_create_operation(
 			origin: OriginFor<T>,
@@ -1070,12 +1075,12 @@ pub mod pallet {
 		///
 		/// * origin: the Substrate account submitting the transaction (which
 		///   can be different from the DID subject)
-		/// * operation: the DidUpdateOperation which contains the new details
+		/// * operation: the [DidUpdateOperation] which contains the new details
 		///   of the given DID
-		/// * signature: the signature over the operation that must be signed
-		///   with the authentication key associated with the new DID. Even in
-		///   case the authentication key is being updated, the operation must
-		///   still be signed with the old one being replaced.
+		/// * signature: the [signature](DidSignature) over the operation that
+		///   must be signed with the authentication key associated with the new
+		///   DID. Even in case the authentication key is being updated, the
+		///   operation must still be signed with the old one being replaced.
 		#[pallet::weight(T::WeightInfo::submit_did_update_operation())]
 		pub fn submit_did_update_operation(
 			origin: OriginFor<T>,
@@ -1109,10 +1114,11 @@ pub mod pallet {
 		///
 		/// * origin: the Substrate account submitting the transaction (which
 		///   can be different from the DID subject)
-		/// * operation: the DidDeletionOperation which includes the DID to
+		/// * operation: the [DidDeletionOperation] which includes the DID to
 		///   deactivate
-		/// * signature: the signature over the operation that must be signed
-		///   with the authentication key associated with the new DID.
+		/// * signature: the [signature](DidSignature) over the operation that
+		///   must be signed with the authentication key associated with the new
+		///   DID.
 		#[pallet::weight(T::WeightInfo::submit_did_delete_operation())]
 		pub fn submit_did_delete_operation(
 			origin: OriginFor<T>,
@@ -1140,11 +1146,12 @@ pub mod pallet {
 
 impl<T: Config> Pallet<T> {
 	/// Verify the validity (i.e., nonce and signature) of a generic
-	/// DidOperation and, if valid, update the DID state with the latest nonce.
+	/// [DidOperation] and, if valid, update the DID state with the latest
+	/// nonce.
 	///
-	/// * operation: the reference to the DID operation which validity is to be
+	/// * operation: the reference to the [DidOperation] which validity is to be
 	///   verified
-	/// * signature: a reference to the signature
+	/// * signature: a reference to the [signature](DidSignature)
 	/// * did: the DID identifier to verify the operation signature for
 	pub fn verify_operation_validity_and_increase_did_nonce<O: DidOperation<T>>(
 		operation: &O,

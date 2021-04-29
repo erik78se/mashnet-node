@@ -116,7 +116,7 @@ pub mod pallet {
 	pub struct DelegationNode<T: Config> {
 		/// The ID of the delegation hierarchy root.
 		pub root_id: T::DelegationNodeId,
-		/// [OPTIONAL] The ID of the parent node. If None, the node is
+		/// \[OPTIONAL\] The ID of the parent node. If None, the node is
 		/// considered a child of the root node.
 		pub parent: Option<T::DelegationNodeId>,
 		/// The DID of the owner of the delegation node, i.e., the delegate.
@@ -231,7 +231,7 @@ pub mod pallet {
 		pub delegation_id: T::DelegationNodeId,
 		/// The ID of the delegation hierarchy root to add this delegation to.
 		pub root_id: T::DelegationNodeId,
-		/// [OPTIONAL] The ID of the parent node to verify that the creator is
+		/// \[OPTIONAL\] The ID of the parent node to verify that the creator is
 		/// allowed to create a new delegation. If None, the verification is
 		/// performed against the provided root node.
 		pub parent_id: Option<T::DelegationNodeId>,

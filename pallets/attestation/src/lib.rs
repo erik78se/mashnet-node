@@ -57,7 +57,7 @@ pub mod pallet {
 		pub ctype_hash: T::Hash,
 		/// The DID of the attester.
 		pub attester: T::DidIdentifier,
-		/// [OPTIONAL] The ID of the delegation node used to authorise the
+		/// \[OPTIONAL\] The ID of the delegation node used to authorize the
 		/// attester.
 		pub delegation_id: Option<T::DelegationNodeId>,
 		/// The flag indicating whether the attestation has been revoked or not.
@@ -78,7 +78,7 @@ pub mod pallet {
 		pub claim_hash: T::Hash,
 		/// The hash of the CTYPE used for this attestation.
 		pub ctype_hash: T::Hash,
-		/// [OPTIONAL] The ID of the delegation node used to authorise the
+		/// \[OPTIONAL\] The ID of the delegation node used to authorise the
 		/// attester.
 		pub delegation_id: Option<T::DelegationNodeId>,
 		/// The DID tx counter.
