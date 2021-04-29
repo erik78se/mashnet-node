@@ -204,7 +204,7 @@ pub fn generate_base_did_details(authentication_key: did::DidVerificationKey) ->
 	did::DidDetails::new(authentication_key, 0u64)
 }
 
-pub fn generate_key_id(key: &did::DidPublicKey, tx_counter: u64) -> TestKeyId {
+pub fn generate_key_id(key: &did::DidPublicKey) -> TestKeyId {
 	utils::calculate_key_id::<Test>(key)
 }
 

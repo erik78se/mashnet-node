@@ -282,16 +282,16 @@ pub mod pallet {
 	pub struct DidDetails<T: Config> {
 		/// The ID of the authentication key, used to authenticate DID-related
 		/// operations.
-		pub authentication_key: KeyId<T>,
+		authentication_key: KeyId<T>,
 		/// The set of the key agreement key IDs, which can be used to encrypt
 		/// data addressed to the DID subject.
-		pub key_agreement_keys: BTreeSet<KeyId<T>>,
+		key_agreement_keys: BTreeSet<KeyId<T>>,
 		/// [OPTIONAL] The ID of the delegation key, used to verify the
 		/// signatures of the delegations created by the DID subject.
-		pub delegation_key: Option<KeyId<T>>,
+		delegation_key: Option<KeyId<T>>,
 		/// [OPTIONAL] The ID of the attestation key, used to verify the
 		/// signatures of the attestations created by the DID subject.
-		pub attestation_key: Option<KeyId<T>>,
+		attestation_key: Option<KeyId<T>>,
 		/// The map of public keys, with the key label as
 		/// the key map and the tuple (key, addition_block_number) as the map
 		/// value.
@@ -301,7 +301,7 @@ pub mod pallet {
 		/// the old attestation keys that have been rotated, i.e., they cannot
 		/// be used to create new attestations but can still be used to verify
 		/// previously issued attestations.
-		pub public_keys: BTreeMap<KeyId<T>, DidPublicKeyDetails<T>>,
+		public_keys: BTreeMap<KeyId<T>, DidPublicKeyDetails<T>>,
 		/// [OPTIONAL] The URL pointing to the service endpoints the DID subject
 		/// publicly exposes.
 		pub endpoint_url: Option<Url>,
@@ -484,6 +484,8 @@ pub mod pallet {
 				self.public_keys
 					.remove(key_id)
 					.ok_or(StorageError::VerificationKeyNotPresent)?;
+				// Also remove from the set of key agreement keys, if present.
+				self.key_agreement_keys.remove(key_id);
 			}
 
 			Ok(())
@@ -499,6 +501,26 @@ pub mod pallet {
 			{
 				self.public_keys.remove(key_id);
 			}
+		}
+
+		pub fn get_authentication_key_id(&self) -> KeyId<T> {
+			self.authentication_key
+		}
+
+		pub fn get_key_agreement_keys_ids(&self) -> &BTreeSet<KeyId<T>> {
+			&self.key_agreement_keys
+		}
+
+		pub fn get_attestation_key_id(&self) -> &Option<KeyId<T>> {
+			&self.attestation_key
+		}
+
+		pub fn get_delegation_key_id(&self) -> &Option<KeyId<T>> {
+			&self.delegation_key
+		}
+
+		pub fn get_public_keys(&self) -> &BTreeMap<KeyId<T>, DidPublicKeyDetails<T>> {
+			&self.public_keys
 		}
 
 		/// Returns a reference to a specific verification key given the type of
@@ -936,7 +958,7 @@ pub mod pallet {
 		DidNotPresent,
 		/// One or more verification keys referenced are not stored in the set
 		/// of verification keys.
-		VerificationKeysNotPresent,
+		VerificationKeyNotPresent,
 		/// The DID operation nonce is not equal to the current DID nonce + 1.
 		InvalidNonce,
 		/// The URL specified is not ASCII-encoded.
@@ -971,7 +993,7 @@ pub mod pallet {
 				StorageError::DidNotPresent => Self::DidNotPresent,
 				StorageError::DidAlreadyPresent => Self::DidAlreadyPresent,
 				StorageError::DidKeyNotPresent(_) | StorageError::VerificationKeyNotPresent => {
-					Self::VerificationKeysNotPresent
+					Self::VerificationKeyNotPresent
 				}
 				StorageError::MaxTxCounterValue => Self::MaxTxCounterValue,
 				StorageError::CurrentlyActiveKey => Self::CurrentlyActiveKey,
