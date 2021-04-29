@@ -84,7 +84,7 @@ impl did::Config for Test {
 
 pub type TestDidIdentifier = <Test as did::Config>::DidIdentifier;
 pub type TestKeyId = did::KeyId<Test>;
-pub type TestVerificationKeyDetails = did::VerificationKeyDetails<Test>;
+pub type TestVerificationKeyDetails = did::DidPublicKeyDetails<Test>;
 pub type TestBlockNumber = <Test as frame_system::Config>::BlockNumber;
 
 type TestHashing = <Test as frame_system::Config>::Hashing;
@@ -120,11 +120,11 @@ pub fn get_sr25519_authentication_key(default: bool) -> sr25519::Pair {
 	}
 }
 
-pub fn get_x25519_encryption_key(default: bool) -> PublicEncryptionKey {
+pub fn get_x25519_encryption_key(default: bool) -> DidEncryptionKey {
 	if default {
-		PublicEncryptionKey::X25519(DEFAULT_ENC_SEED)
+		DidEncryptionKey::X25519(DEFAULT_ENC_SEED)
 	} else {
-		PublicEncryptionKey::X25519(ALTERNATIVE_ENC_SEED)
+		DidEncryptionKey::X25519(ALTERNATIVE_ENC_SEED)
 	}
 }
 
@@ -165,7 +165,7 @@ pub fn get_sr25519_delegation_key(default: bool) -> sr25519::Pair {
 // a default key agreement key.
 pub fn generate_base_did_creation_operation(
 	did: TestDidIdentifier,
-	new_auth_key: did::DidPublicVerificationKey,
+	new_auth_key: did::DidVerificationKey,
 ) -> did::DidCreationOperation<Test> {
 	DidCreationOperation {
 		did,
@@ -182,12 +182,12 @@ pub fn generate_base_did_creation_operation(
 pub fn generate_base_did_update_operation(did: TestDidIdentifier) -> did::DidUpdateOperation<Test> {
 	DidUpdateOperation {
 		did,
-		new_auth_key: None,
-		new_key_agreement_key: None,
+		new_authentication_key: None,
+		new_key_agreement_keys: None,
 		attestation_key_update: DidVerificationKeyUpdateAction::default(),
 		delegation_key_update: DidVerificationKeyUpdateAction::default(),
 		new_endpoint_url: None,
-		verification_keys_to_remove: None,
+		public_keys_to_remove: None,
 		tx_counter: 1,
 	}
 }
@@ -200,19 +200,19 @@ pub fn generate_base_did_delete_operation(did: TestDidIdentifier) -> did::DidDel
 
 // Given an authentication key, it generates a DidDetails object with the given
 // key and a default key agreement key.
-pub fn generate_base_did_details(auth_key: did::DidPublicVerificationKey) -> did::DidDetails<Test> {
+pub fn generate_base_did_details(auth_key: did::DidVerificationKey) -> did::DidDetails<Test> {
 	did::DidDetails {
-		auth_key,
+		authentication_key: auth_key,
 		key_agreement_key: get_x25519_encryption_key(true),
 		attestation_key: None,
 		delegation_key: None,
 		endpoint_url: None,
 		last_tx_counter: 0,
-		verification_keys: BTreeMap::new(),
+		public_keys: BTreeMap::new(),
 	}
 }
 
-pub fn generate_attestation_key_id(key: &did::DidPublicVerificationKey, tx_counter: u64) -> TestKeyId {
+pub fn generate_attestation_key_id(key: &did::DidVerificationKey, tx_counter: u64) -> TestKeyId {
 	let mut vec = key.encode();
 	vec.extend_from_slice(did::DidVerificationKeyRelationship::AssertionMethod.encode().as_ref());
 	vec.extend_from_slice(tx_counter.encode().as_slice());
