@@ -89,6 +89,10 @@ fn get_url_endpoint(length: u32) -> Url {
 	Url::Http(HttpUrl::try_from((url_encoded_string.as_ref(), length)).expect("Failed to create default URL with provided length."))
 }
 
+fn get_did_base_details<T: Config>(auth_key: DidVerificationKey) -> DidDetails<T> {
+	DidDetails::new(auth_key, BlockNumberOf::<T>::default())
+}
+
 fn generate_base_did_creation_operation<T: Config>(
 	did: DidIdentifierOf<T>,
 	new_auth_key: DidVerificationKey,
@@ -262,10 +266,9 @@ benchmarks! {
 		// Need to have at least m keys to delete, so using m + n to cover cases in which n < m
 		let did_key_agreement_keys = get_key_agreement_keys(m + n);
 
-		let mut did_creation_op = generate_base_did_creation_operation::<T>(did_subject.clone(), DidVerificationKey::from(did_public_auth_key));
-		did_creation_op.new_key_agreement_keys = did_key_agreement_keys.clone();
-		let signature = ed25519_sign(AUTHENTICATION_KEY_ID, &did_public_auth_key, did_creation_op.encode().as_ref()).expect("Failed to create DID signature from raw ed25519 signature.");
-		let _ = Pallet::<T>::submit_did_create_operation(RawOrigin::Signed(submitter.clone()).into(), did_creation_op, DidSignature::from(signature));
+		let mut did_details = get_did_base_details(DidVerificationKey::from(did_public_auth_key));
+		did_details.add_key_agreement_keys(did_key_agreement_keys, BlockNumberOf::<T>::default());
+		Did::<T>::insert(&did_subject, did_details);
 
 		let new_did_public_auth_key = get_ed25519_public_authentication_key();
 		let new_key_agreement_keys = get_key_agreement_keys(n);
@@ -296,15 +299,11 @@ benchmarks! {
 		let expected_delegation_key_id = utils::calculate_key_id::<T>(&DidVerificationKey::from(new_did_public_del_key).into());
 		let expected_attestation_key_id = utils::calculate_key_id::<T>(&DidVerificationKey::from(new_did_public_att_key).into());
 		// # of key agreement keys - # of public keys to remove + authentication key + delegation key + attestation key
-		let expected_public_keys_length = expected_key_agreement_keys_length - expected_public_keys_to_remove_length + 3;
+		let expected_public_keys_length = expected_key_agreement_keys_length.saturating_sub(expected_public_keys_to_remove_length) + 3;
 
 		assert_eq!(
 			stored_did.get_authentication_key_id(),
 			expected_authentication_key_id
-		);
-		assert_eq!(
-			stored_key_agreement_keys_ids.len(),
-			expected_key_agreement_keys_length
 		);
 		for new_key in did_update_op.new_key_agreement_keys.iter().copied() {
 			assert!(
@@ -318,6 +317,7 @@ benchmarks! {
 			stored_did.get_attestation_key_id(),
 			&Some(expected_attestation_key_id)
 		);
+		//TODO: Fix expected value based on benchmarking input values
 		assert_eq!(
 			stored_did.get_public_keys().len(),
 			expected_public_keys_length
