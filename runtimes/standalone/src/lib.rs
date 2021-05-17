@@ -317,8 +317,8 @@ impl delegation::Config for Runtime {
 
 parameter_types! {
 	pub const MaxNewKeyAgreementKeys: u32 = 5u32;
-	pub const MaxVerificationKeysToRevoke: u32 = 10u32;
-	pub const MaxUrlLength: u32 = 200u32;
+	pub const MaxVerificationKeysToRevoke: u32 = 5u32;
+	pub const MaxUrlLength: u32 = 500u32;
 }
 
 impl did::Config for Runtime {
