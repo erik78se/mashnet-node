@@ -17,7 +17,7 @@
 // If you feel like getting in touch with us, you can do so at info@botlabs.org
 
 use frame_benchmarking::{account, benchmarks, impl_benchmark_test_suite};
-use sp_io::crypto::{ed25519_generate, ed25519_sign, sr25519_generate, sr25519_verify, sr25519_sign};
+use sp_io::crypto::{ed25519_generate, ed25519_sign, sr25519_generate, sr25519_sign};
 use sp_core::{ed25519, sr25519};
 use sp_core::crypto::KeyTypeId;
 use sp_std::{collections::btree_set::BTreeSet, convert::TryInto};
@@ -118,10 +118,6 @@ fn generate_base_did_update_operation<T: Config>(
 	}
 }
 
-fn generate_base_did_details<T: Config>(authentication_key: DidVerificationKey) -> DidDetails<T> {
-	DidDetails::new(authentication_key, BlockNumberOf::<T>::default())
-}
-
 benchmarks! {
 	submit_did_create_operation_ed25519_keys {
 		let n in 1 .. T::MaxNewKeyAgreementKeys::get();
@@ -150,10 +146,10 @@ benchmarks! {
 		let stored_key_agreement_keys_ids = stored_did.get_key_agreement_keys_ids();
 		let stored_public_keys = stored_did.get_public_keys();
 
-		let expected_authentication_key_id = utils::calculate_key_id::<T>(&did_creation_op.new_authentication_key.into());
+		let expected_authentication_key_id = utils::calculate_key_id::<T>(&DidVerificationKey::from(did_public_auth_key).into());
 		let expected_key_agreement_keys_length = usize::try_from(n).expect("Failed to convert new key agreements length value to usize value.");
-		let expected_delegation_key_id = utils::calculate_key_id::<T>(&did_creation_op.new_delegation_key.expect("DID creation operation should specify a new delegation key.").into());
-		let expected_attestation_key_id = utils::calculate_key_id::<T>(&did_creation_op.new_attestation_key.expect("DID creation operation should specify a new attestation key.").into());
+		let expected_attestation_key_id = utils::calculate_key_id::<T>(&DidVerificationKey::from(did_public_att_key).into());
+		let expected_delegation_key_id = utils::calculate_key_id::<T>(&DidVerificationKey::from(did_public_del_key).into());
 		// # of key agreement keys + authentication key + delegation key + attestation key
 		let expected_public_keys_length = expected_key_agreement_keys_length + 3;
 
@@ -208,17 +204,17 @@ benchmarks! {
 		did_creation_op.new_delegation_key = Some(DidVerificationKey::from(did_public_del_key));
 		did_creation_op.new_endpoint_url = Some(did_endpoint);
 
-		let did_creation_signature = sr25519_sign(AUTHENTICATION_KEY_ID, &did_public_auth_key, did_creation_op.encode().as_ref()).expect("Failed to create DID signature from raw sr25519 signature.");
+		let did_creation_signature = sr25519_sign(AUTHENTICATION_KEY_ID, &did_public_auth_key, did_creation_op.encode().as_ref()).expect("Failed to create DID signature from raw ed25519 signature.");
 	}: submit_did_create_operation(RawOrigin::Signed(submitter), did_creation_op.clone(), DidSignature::from(did_creation_signature))
 	verify {
 		let stored_did = Did::<T>::get(&did_subject).expect("New DID should be stored on chain.");
 		let stored_key_agreement_keys_ids = stored_did.get_key_agreement_keys_ids();
 		let stored_public_keys = stored_did.get_public_keys();
 
-		let expected_authentication_key_id = utils::calculate_key_id::<T>(&did_creation_op.new_authentication_key.into());
+		let expected_authentication_key_id = utils::calculate_key_id::<T>(&DidVerificationKey::from(did_public_auth_key).into());
 		let expected_key_agreement_keys_length = usize::try_from(n).expect("Failed to convert new key agreements length value to usize value.");
-		let expected_delegation_key_id = utils::calculate_key_id::<T>(&did_creation_op.new_delegation_key.expect("DID creation operation should specify a new delegation key.").into());
-		let expected_attestation_key_id = utils::calculate_key_id::<T>(&did_creation_op.new_attestation_key.expect("DID creation operation should specify a new attestation key.").into());
+		let expected_attestation_key_id = utils::calculate_key_id::<T>(&DidVerificationKey::from(did_public_att_key).into());
+		let expected_delegation_key_id = utils::calculate_key_id::<T>(&DidVerificationKey::from(did_public_del_key).into());
 		// # of key agreement keys + authentication key + delegation key + attestation key
 		let expected_public_keys_length = expected_key_agreement_keys_length + 3;
 
@@ -263,7 +259,8 @@ benchmarks! {
 
 		let did_subject = DidIdentifierOf::<T>::default();
 		let did_public_auth_key = get_ed25519_public_authentication_key();
-		let did_key_agreement_keys = get_key_agreement_keys(n);
+		// Need to have at least m keys to delete, so using m + n to cover cases in which n < m
+		let did_key_agreement_keys = get_key_agreement_keys(m + n);
 
 		let mut did_creation_op = generate_base_did_creation_operation::<T>(did_subject.clone(), DidVerificationKey::from(did_public_auth_key));
 		did_creation_op.new_key_agreement_keys = did_key_agreement_keys.clone();
@@ -281,54 +278,56 @@ benchmarks! {
 		let mut did_update_op = generate_base_did_update_operation::<T>(did_subject.clone());
 		did_update_op.new_authentication_key = Some(DidVerificationKey::from(new_did_public_auth_key));
 		did_update_op.new_key_agreement_keys = new_key_agreement_keys;
-		did_update_op.attestation_key_update = DidVerificationKeyUpdateAction::Change(DidVerificationKey::from(new_did_public_att_key));
-		did_update_op.delegation_key_update = DidVerificationKeyUpdateAction::Change(DidVerificationKey::from(new_did_public_del_key));
+		did_update_op.attestation_key_update = DidVerificationKeyUpdateAction::Change(DidVerificationKey::from(new_did_public_att_key.clone()));
+		did_update_op.delegation_key_update = DidVerificationKeyUpdateAction::Change(DidVerificationKey::from(new_did_public_del_key.clone()));
+		did_update_op.public_keys_to_remove = public_keys_to_remove;
 		did_update_op.new_endpoint_url = Some(new_url);
 
 		let did_update_signature = ed25519_sign(AUTHENTICATION_KEY_ID, &did_public_auth_key, did_update_op.encode().as_ref()).expect("Failed to create DID signature from raw ed25519 signature.");
 	}: submit_did_update_operation(RawOrigin::Signed(submitter), did_update_op.clone(), DidSignature::from(did_update_signature))
-	// verify {
-	// 	let stored_did = Did::<T>::get(&did_subject).expect("New DID should be stored on chain.");
-	// 	let stored_key_agreement_keys_ids = stored_did.get_key_agreement_keys_ids();
-	// 	let stored_public_keys = stored_did.get_public_keys();
+	verify {
+		let stored_did = Did::<T>::get(&did_subject).expect("DID should be stored on chain.");
+		let stored_key_agreement_keys_ids = stored_did.get_key_agreement_keys_ids();
+		let stored_public_keys = stored_did.get_public_keys();
 
-	// 	let expected_authentication_key_id = utils::calculate_key_id::<T>(&did_creation_op.new_authentication_key.into());
-	// 	let expected_key_agreement_keys_length = usize::try_from(n).expect("Failed to convert new key agreements length value to usize value.");
-	// 	let expected_delegation_key_id = utils::calculate_key_id::<T>(&did_creation_op.new_delegation_key.expect("DID creation operation should specify a new delegation key.").into());
-	// 	let expected_attestation_key_id = utils::calculate_key_id::<T>(&did_creation_op.new_attestation_key.expect("DID creation operation should specify a new attestation key.").into());
-	// 	// # of key agreement keys + authentication key + delegation key + attestation key
-	// 	let expected_public_keys_length = expected_key_agreement_keys_length + 3;
+		let expected_authentication_key_id = utils::calculate_key_id::<T>(&DidVerificationKey::from(new_did_public_auth_key).into());
+		let expected_key_agreement_keys_length = usize::try_from(n).expect("Failed to convert new key agreements length value to usize value.");
+		let expected_public_keys_to_remove_length = usize::try_from(m).expect("Failed to convert public keys to remove length value to usize value.");
+		let expected_delegation_key_id = utils::calculate_key_id::<T>(&DidVerificationKey::from(new_did_public_del_key).into());
+		let expected_attestation_key_id = utils::calculate_key_id::<T>(&DidVerificationKey::from(new_did_public_att_key).into());
+		// # of key agreement keys - # of public keys to remove + authentication key + delegation key + attestation key
+		let expected_public_keys_length = expected_key_agreement_keys_length - expected_public_keys_to_remove_length + 3;
 
-	// 	assert_eq!(
-	// 		stored_did.get_authentication_key_id(),
-	// 		expected_authentication_key_id
-	// 	);
-	// 	assert_eq!(
-	// 		stored_key_agreement_keys_ids.len(),
-	// 		expected_key_agreement_keys_length
-	// 	);
-	// 	for new_key in did_creation_op.new_key_agreement_keys.iter().copied() {
-	// 		assert!(
-	// 			stored_key_agreement_keys_ids.contains(&utils::calculate_key_id::<T>(&new_key.into())))
-	// 	}
-	// 	assert_eq!(
-	// 		stored_did.get_delegation_key_id(),
-	// 		&Some(expected_delegation_key_id)
-	// 	);
-	// 	assert_eq!(
-	// 		stored_did.get_attestation_key_id(),
-	// 		&Some(expected_attestation_key_id)
-	// 	);
-	// 	assert_eq!(
-	// 		stored_did.get_public_keys().len(),
-	// 		expected_public_keys_length
-	// 	);
-	// 	assert!(stored_public_keys.contains_key(&expected_authentication_key_id));
-	// 	assert!(stored_public_keys.contains_key(&expected_delegation_key_id));
-	// 	assert!(stored_public_keys.contains_key(&expected_attestation_key_id));
-	// 	assert_eq!(stored_did.endpoint_url, did_creation_op.new_endpoint_url);
-	// 	assert_eq!(stored_did.last_tx_counter, 0u64);
-	// }
+		assert_eq!(
+			stored_did.get_authentication_key_id(),
+			expected_authentication_key_id
+		);
+		assert_eq!(
+			stored_key_agreement_keys_ids.len(),
+			expected_key_agreement_keys_length
+		);
+		for new_key in did_update_op.new_key_agreement_keys.iter().copied() {
+			assert!(
+				stored_key_agreement_keys_ids.contains(&utils::calculate_key_id::<T>(&new_key.into())))
+		}
+		assert_eq!(
+			stored_did.get_delegation_key_id(),
+			&Some(expected_delegation_key_id)
+		);
+		assert_eq!(
+			stored_did.get_attestation_key_id(),
+			&Some(expected_attestation_key_id)
+		);
+		assert_eq!(
+			stored_did.get_public_keys().len(),
+			expected_public_keys_length
+		);
+		assert!(stored_public_keys.contains_key(&expected_authentication_key_id));
+		assert!(stored_public_keys.contains_key(&expected_delegation_key_id));
+		assert!(stored_public_keys.contains_key(&expected_attestation_key_id));
+		assert_eq!(stored_did.endpoint_url, did_update_op.new_endpoint_url);
+		assert_eq!(stored_did.last_tx_counter, did_update_op.tx_counter);
+	}
 }
 
 impl_benchmark_test_suite! {
