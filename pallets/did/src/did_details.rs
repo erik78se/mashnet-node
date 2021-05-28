@@ -324,13 +324,10 @@ impl<T: Config> DidDetails<T> {
 	/// Delete the DID attestation key.
 	///
 	/// Once deleted, it cannot be used to write new attestations anymore.
-	/// The key is also removed from the set of verification keys if it not
-	/// used anywhere else in the DID.
+	/// The old key is not removed from the set of verification keys, hence
+	/// it can still be used to verify past attestations.
 	pub fn delete_attestation_key(&mut self) {
-		if let Some(old_attestation_key_id) = self.attestation_key {
-			self.attestation_key = None;
-			self.remove_key_if_unused(&old_attestation_key_id);
-		}
+		self.attestation_key = None;
 	}
 
 	/// Update the DID delegation key.
