@@ -1,0 +1,12 @@
+#!/bin/bash
+
+### mashnet-node 
+snapctl set mashnet-node.address=0.0.0.0
+snapctl set mashnet-node.wsport=9944
+snapctl set mashnet-node.name="mashnet-node-name"
+
+### kilt-parachain
+snapctl set kilt-parachain.address=0.0.0.0
+snapctl set kilt-parachain.wsport=8080
+snapctl set kilt-parachain.name="kilt-parachain-name"
+
